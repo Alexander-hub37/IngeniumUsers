@@ -1,159 +1,61 @@
-# Event Reservation API
-Este proyecto es una API para la gestión de reservas de espacios para eventos, desarrollada utilizando Laravel. La API permite a los usuarios registrar, iniciar sesión, crear y gestionar reservas, así como a los administradores gestionar espacios.
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-# Requisitos del Sistema
-Antes de comenzar, asegúrate de tener instalado lo siguiente:
+<p align="center">
+<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
 
-- PHP >= 8.0
-- Composer (para gestionar dependencias de PHP)
-- MySQL o cualquier otro sistema de base de datos compatible con Laravel
-- Node.js >= 14 (solo si planeas trabajar con el frontend)
-- Git (opcional)
+## About Laravel
 
-## Dirígete al directorio del proyecto:
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-cd event-reservation-backend
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
-## Instalación de Dependencias
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-### Instala todas las dependencias de PHP utilizando Composer:
+## Learning Laravel
 
-composer install
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-### Instala todas las dependencias de Node.js (solo si tienes un frontend asociado):
+You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
 
-npm install
+If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-### Configuración del Entorno
+## Laravel Sponsors
 
-Crea un archivo .env basado en el archivo .env.example:
+We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
 
-cp .env.example .env
+### Premium Partners
 
-Abre el archivo .env y edita las siguientes variables para configurar la conexión a la base de datos:
+- **[Vehikl](https://vehikl.com)**
+- **[Tighten Co.](https://tighten.co)**
+- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+- **[64 Robots](https://64robots.com)**
+- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
+- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
+- **[Redberry](https://redberry.international/laravel-development)**
+- **[Active Logic](https://activelogic.com)**
 
-- DB_CONNECTION=mysql
-- DB_HOST=127.0.0.1
-- DB_PORT=3306
-- DB_DATABASE=nombre_de_tu_base_de_datos
-- DB_USERNAME=tu_usuario
-- DB_PASSWORD=tu_contraseña
+## Contributing
 
-### Genera la clave de aplicación de Laravel:
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-php artisan key:generate
+## Code of Conduct
 
-### Migraciones y Seeds
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-Ejecuta las migraciones para crear las tablas en la base de datos:
+## Security Vulnerabilities
 
-php artisan migrate
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-Si tienes seeds (semillas) configuradas para popular las tablas con datos iniciales, puedes ejecutarlas con:
+## License
 
-php artisan db:seed
-
-Esto llenará la base de datos con algunos datos iniciales, como roles de usuarios, espacios de ejemplo, etc.
-
-## JWT (JSON Web Token) Configuración
-
-Genera la clave secreta para JWT:
-
-php artisan jwt:secret
-
-Esto agregará una nueva clave en el archivo .env llamada JWT_SECRET.
-
-## Ejecutar el Servidor
-
-### Ejecuta el servidor de desarrollo de Laravel:
-
-php artisan serve
-
-El servidor estará disponible en http://localhost:8000.
-
-## Documentación de la API
-
-### Acceso a la Documentación Swagger
-
-La documentación de la API ha sido generada utilizando Swagger. Puedes acceder a ella en la siguiente URL:
-
-http://localhost:8000/api/documentation
-
-### Aquí verás todos los endpoints disponibles, los parámetros requeridos y las respuestas que puedes esperar.
-
-## Endpoints Principales
-
-### Autenticación
-- POST /api/register: Registro de un nuevo usuario.
-- POST /api/login: Inicio de sesión.
-- GET /api/me: Obtener información del usuario autenticado.
-### Espacios
-- GET /api/spaces: Obtener la lista de todos los espacios disponibles.
-- GET /api/spaces/{id}: Obtener información sobre un espacio específico.
-- POST /api/spaces (Solo para administradores): Crear un nuevo espacio.
-- PUT /api/spaces/{id} (Solo para administradores): Actualizar un espacio existente.
-- DELETE /api/spaces/{id} (Solo para administradores): Eliminar un espacio.
-### Reservas
-- GET /api/reservations: Obtener todas las reservas del usuario autenticado.
-- POST /api/reservations: Crear una nueva reserva.
-- GET /api/reservations/{id}: Obtener una reserva específica del usuario autenticado.
-- PUT /api/reservations/{id}: Actualizar una reserva existente.
-- DELETE /api/reservations/{id}: Eliminar una reserva existente.
-
-## Ejecución de Tests
-
-### Para ejecutar las pruebas unitarias, utiliza el siguiente comando:
-php artisan test
-
-### Consideraciones Adicionales
-Tokens JWT: Todos los endpoints que requieren autenticación necesitan un token JWT. Este token se obtiene al hacer login y debe ser enviado en el encabezado Authorization de cada solicitud, precedido de la palabra "Bearer".
-
-Middleware de Admin: Las rutas para la creación, actualización y eliminación de espacios están protegidas por un middleware que garantiza que solo los usuarios con el rol de admin puedan acceder.
-
-Swagger: La documentación se puede regenerar si realizas cambios en los controladores usando:
-
-php artisan l5-swagger:generate
-
-Storage de Imágenes: Las imágenes subidas para los espacios se guardan en la carpeta storage/app/public/spaces. Asegúrate de correr php artisan storage:link para crear un enlace simbólico hacia el directorio público.
-
-### Ejemplos de Uso
-
-Crear un Nuevo Usuario
-```bash
-curl -X POST http://localhost:8000/api/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "John Doe",
-    "email": "john@example.com",
-    "password": "password",
-    "password_confirmation": "password"
-  }'
-
-Iniciar Sesión
-```bash
-curl -X POST http://localhost:8000/api/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "john@example.com",
-    "password": "password"
-  }'
-
-Crear una Reserva
-```bash
-curl -X POST http://localhost:8000/api/reservations \
-  -H "Authorization: Bearer {token}" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "space_id": 1,
-    "event_name": "Reunión",
-    "reservation_date": "2024-10-03",
-    "start_time": "08:00:00",
-    "end_time": "10:00:00"
-  }'
-
-
-
-
-
-
-
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
