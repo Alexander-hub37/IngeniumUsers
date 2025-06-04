@@ -68,6 +68,14 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         // Aquí puedes añadir cualquier claim personalizado al token
-        return [];
+        return [
+            'role' => $this->role
+        ];
     }
+
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+
 }

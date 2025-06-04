@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Profile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -141,6 +142,23 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        $user = auth()->user()->load('profile');
+
+        $profile = $user->profile;
+
+        return response()->json([
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'profile' => $profile ? [
+                    'telefono' => $profile->telefono,
+                    'direccion' => $profile->direccion,
+                    'fecha_nacimiento' => $profile->fecha_nacimiento,
+                    'foto_url' => $profile->foto ? url("/api/perfil/archivo/foto/{$profile->foto}") : null,
+                    'cv_url' => $profile->cv ? url("/api/perfil/archivo/cv/{$profile->cv}") : null,
+                ] : null,
+            ]
+        ]);
     }
 }
