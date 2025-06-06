@@ -164,6 +164,20 @@ class DocenteController extends Controller
         ]);
     }
 
+    public function obtenerDocentesCompletos()
+    {
+        $docentes = Docente::with([
+            'capacitaciones',
+            'experienciasLaborales',
+            'datosProfesionales',
+            'datosIngenium'
+        ])->get();
+
+        return response()->json([
+            'data' => $docentes
+        ]);
+    }
+
     public function verArchivo($tipo, $filename)
     {
         $tiposPermitidos = ['foto', 'firma', 'cv'];

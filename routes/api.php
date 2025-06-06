@@ -45,6 +45,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::delete('/datos-ingenium/{id}', [DatoIngeniumController::class, 'destroy']);
 
     Route::get('/docentes/{id}/completo', [DocenteController::class, 'obtenerDocenteCompleto']);
+    Route::get('/docentes-completos', [DocenteController::class, 'obtenerDocentesCompletos']);
 
     Route::get('/docentes/archivo/{tipo}/{filename}', [DocenteController::class, 'verArchivo']);
 
