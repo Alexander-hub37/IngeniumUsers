@@ -23,7 +23,9 @@ return new class extends Migration
             $table->date('fecha_nacimiento')->nullable();
             $table->string('telefono')->nullable();
             $table->string('direccion')->nullable();
+            $table->string('foto')->nullable();
             $table->string('firma')->nullable();
+            $table->string('cv')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

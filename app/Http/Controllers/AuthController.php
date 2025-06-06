@@ -40,15 +40,7 @@ class AuthController extends Controller
         $user = Auth::user();
 
         return response()->json([
-            'message' => 'Login exitoso',
-            'token' => $token,
-            'user' => [
-                'id' => $user->id,
-                'usuario' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role,
-                'foto_url' => $user->foto ? url("/storage/users/{$user->foto}") : null,
-            ]
+            'token' => $token
         ]);
     }
 
@@ -73,17 +65,9 @@ class AuthController extends Controller
     {
         try {
             $user = JWTAuth::parseToken()->authenticate();
+            
+            return response()->json(auth()->user());
 
-            return response()->json([
-                'message' => 'Usuario autenticado',
-                'user' => [
-                    'id' => $user->id,
-                    'usuario' => $user->name,
-                    'email' => $user->email,
-                    'role' => $user->role,
-                    'foto_url' => $user->foto ? url("/storage/users/{$user->foto}") : null,
-                ]
-            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'No se pudo obtener el usuario',

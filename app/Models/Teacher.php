@@ -4,50 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class Docente extends Model
+
+class Teacher extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'user_id',
-        'nombres',
+        'nombre',
         'apellidos',
         'dni',
-        'fecha_nacimiento',
+        'email',
         'telefono',
-        'direccion',
         'foto',
         'firma',
         'cv',
     ];
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function datosProfesionales()
-    {
-        return $this->hasMany(DatoProfesional::class);
-    }
-
-    public function experienciasLaborales()
-    {
-        return $this->hasMany(ExperienciaLaboral::class);
-    }
-
-    public function capacitaciones()
-    {
-        return $this->hasMany(Capacitacion::class);
-    }
-
-    public function datosIngenium()
-    {
-        return $this->hasMany(DatoIngenium::class);
-    }
+    protected $dates = ['deleted_at'];
 
     protected $appends = ['foto_url', 'firma_url', 'cv_url'];
 
@@ -71,5 +48,4 @@ class Docente extends Model
             ? url("/api/docentes/archivo/cv/{$this->cv}") 
             : null;
     }
-
 }

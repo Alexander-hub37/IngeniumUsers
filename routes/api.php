@@ -46,7 +46,8 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::get('/docentes/{id}/completo', [DocenteController::class, 'obtenerDocenteCompleto']);
 
-   
+    Route::get('/docentes/archivo/{tipo}/{filename}', [DocenteController::class, 'verArchivo']);
+
     Route::group(['middleware' => 'admin'], function() {
         Route::apiResource('/usuarios', UsuarioController::class);
 

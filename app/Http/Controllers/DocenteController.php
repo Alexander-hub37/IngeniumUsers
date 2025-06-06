@@ -40,7 +40,10 @@ class DocenteController extends Controller
             'fecha_nacimiento' => 'nullable|date',
             'telefono' => 'nullable|string|max:20',
             'direccion' => 'nullable|string|max:255',
+            'foto' => 'nullable|image|max:2048', 
             'firma' => 'nullable|image|max:2048',
+            'cv' => 'nullable|mimes:pdf|max:4096', 
+            
             
         ]);
 
@@ -53,8 +56,16 @@ class DocenteController extends Controller
             'telefono', 'direccion'
         ]));
 
+        if ($request->hasFile('foto')) {
+            $docente->foto = basename($request->file('foto')->store('docentes/fotos', 'private'));
+        }
+
         if ($request->hasFile('firma')) {
             $docente->firma = basename($request->file('firma')->store('docentes/firmas', 'private'));
+        }
+
+        if ($request->hasFile('cv')) {
+            $docente->cv = basename($request->file('cv')->store('docentes/cvs', 'private'));
         }
 
         $docente->save();
@@ -80,7 +91,9 @@ class DocenteController extends Controller
             'fecha_nacimiento' => 'nullable|date',
             'telefono' => 'nullable|string|max:20',
             'direccion' => 'nullable|string|max:255',
+            'foto' => 'nullable|image|max:2048', 
             'firma' => 'nullable|image|max:2048',
+            'cv' => 'nullable|mimes:pdf|max:4096', 
         ]);
 
         if ($validator->fails()) {
@@ -92,12 +105,28 @@ class DocenteController extends Controller
             'telefono', 'direccion'
         ]));
 
+        if ($request->hasFile('foto')) {
+            if ($docente->foto) {
+                \Storage::disk('private')->delete('docentes/fotos/' . $docente->foto);
+            }
+
+            $docente->foto = basename($request->file('foto')->store('docentes/fotos', 'private'));
+        }
+
         if ($request->hasFile('firma')) {
             if ($docente->firma) {
                 \Storage::disk('private')->delete('docentes/firmas/' . $docente->firma);
             }
 
             $docente->firma = basename($request->file('firma')->store('docentes/firmas', 'private'));
+        }
+
+        if ($request->hasFile('cv')) {
+            if ($docente->cv) {
+                \Storage::disk('private')->delete('docentes/cvs/' . $docente->cv);
+            }
+
+            $docente->cv = basename($request->file('cv')->store('docentes/cvs', 'private'));
         }
 
         $docente->save();
@@ -134,5 +163,39 @@ class DocenteController extends Controller
             'data' => $docente
         ]);
     }
+
+    public function verArchivo($tipo, $filename)
+    {
+        $tiposPermitidos = ['foto', 'firma', 'cv'];
+
+        // Verificar si el tipo de archivo es válido
+        if (!in_array($tipo, $tiposPermitidos)) {
+            return response()->json(['error' => 'Tipo de archivo no permitido'], 400);
+        }
+
+        // Mapear el tipo de archivo a su ruta en el almacenamiento privado
+        $subcarpetas = [
+            'foto' => 'docentes/fotos',
+            'firma' => 'docentes/firmas',
+            'cv' => 'docentes/cvs',
+        ];
+
+        // Obtener la ruta completa del archivo
+        $ruta = $subcarpetas[$tipo] . '/' . $filename;
+
+        // Verificar si el archivo existe
+        if (!Storage::disk('private')->exists($ruta)) {
+            return response()->json(['error' => 'Archivo no encontrado'], 404);
+        }
+
+        // Si es un archivo CV, descargamos el archivo
+        if ($tipo === 'cv') {
+            return Storage::disk('private')->download($ruta);
+        }
+
+        // Para fotos y firmas, retornamos la respuesta con el archivo
+        return Storage::disk('private')->response($ruta);
+    }
+
 
 }
