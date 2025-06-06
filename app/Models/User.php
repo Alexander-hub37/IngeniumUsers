@@ -8,10 +8,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+
 
     /**
      * The attributes that are mass assignable.
@@ -35,6 +38,11 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
     ];
 
+    public function docente()
+    {
+        return $this->hasOne(Docente::class);
+    }
+
     /**
      * The attributes that should be cast.
      *
@@ -44,10 +52,6 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
-    public function reservations()
-    {
-        return $this->hasMany(Reservation::class);
-    }
 
     /**
      * Get the identifier that will be stored in the JWT.
@@ -72,10 +76,4 @@ class User extends Authenticatable implements JWTSubject
             'role' => $this->role
         ];
     }
-
-    public function profile()
-    {
-        return $this->hasOne(Profile::class);
-    }
-
 }

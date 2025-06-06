@@ -13,152 +13,82 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class AuthController extends Controller
 {
 
-    /**
-     * @OA\Post(
-     *     path="/api/register",
-     *     summary="Registrar un nuevo usuario",
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"name", "email", "password", "password_confirmation"},
-     *             @OA\Property(property="name", type="string", example="Patroclo Lopez"),
-     *             @OA\Property(property="email", type="string", example="patroclolopez@example.com"),
-     *             @OA\Property(property="password", type="string", format="password", example="password"),
-     *             @OA\Property(property="password_confirmation", type="string", format="password", example="password")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=201,
-     *         description="Usuario registrado exitosamente",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="user", type="object"),
-     *             @OA\Property(property="token", type="string")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=400,
-     *         description="Error de validación"
-     *     )
-     * )
-     */
-    public function register(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
-        }
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        $token = JWTAuth::fromUser($user);
-
-        return response()->json(compact('user', 'token'), 201);
-    }
-
-
-    /**
-     * @OA\Post(
-     *     path="/api/login",
-     *     summary="Iniciar sesión de usuario",
-     *     @OA\RequestBody(
-     *         required=true,
-     *         @OA\JsonContent(
-     *             required={"email", "password"},
-     *             @OA\Property(property="email", type="string", example="patroclolopez@example.com"),
-     *             @OA\Property(property="password", type="string", format="password", example="password")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Inicio de sesión exitoso",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="token", type="string")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Credenciales inválidas"
-     *     )
-     * )
-     */
     public function login(Request $request)
     {
+        
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'password' => 'required|string|min:6',
+        ]);
+
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Error de validación',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
         $credentials = $request->only('email', 'password');
 
         if (!$token = JWTAuth::attempt($credentials)) {
-            return response()->json(['error' => 'Invalid credentials'], 401);
+            return response()->json([
+                'message' => 'Credenciales inválidas'
+            ], 401);
         }
 
-        return response()->json(compact('token'));
-    }
-
-
-
-    /**
-     * @OA\Post(
-     *     path="/api/logout",
-     *     summary="Cerrar sesión de usuario",
-     *     @OA\Response(
-     *         response=200,
-     *         description="Cierre de sesión exitoso",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Successfully logged out")
-     *         )
-     *     )
-     * )
-     */
-    public function logout()
-    {
-        auth()->logout();
-
-        return response()->json(['message' => 'Successfully logged out']);
-    }
-
-
-
-    /**
-     * @OA\Get(
-     *     path="/api/me",
-     *     summary="Obtener información del usuario autenticado",
-     *     @OA\Response(
-     *         response=200,
-     *         description="Información del usuario autenticado",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="id", type="integer", example=1),
-     *             @OA\Property(property="name", type="string", example="Patroclo Lopez"),
-     *             @OA\Property(property="email", type="string", example="patroclolopez@example.com")
-     *         )
-     *     )
-     * )
-     */
-    public function me()
-    {
-        $user = auth()->user()->load('profile');
-
-        $profile = $user->profile;
+        $user = Auth::user();
 
         return response()->json([
+            'message' => 'Login exitoso',
+            'token' => $token,
             'user' => [
                 'id' => $user->id,
-                'name' => $user->name,
+                'usuario' => $user->name,
                 'email' => $user->email,
-                'profile' => $profile ? [
-                    'telefono' => $profile->telefono,
-                    'direccion' => $profile->direccion,
-                    'fecha_nacimiento' => $profile->fecha_nacimiento,
-                    'foto_url' => $profile->foto ? url("/api/perfil/archivo/foto/{$profile->foto}") : null,
-                    'cv_url' => $profile->cv ? url("/api/perfil/archivo/cv/{$profile->cv}") : null,
-                ] : null,
+                'role' => $user->role,
+                'foto_url' => $user->foto ? url("/storage/users/{$user->foto}") : null,
             ]
         ]);
+    }
+
+    public function logout()
+    {
+        try {
+            JWTAuth::invalidate(JWTAuth::getToken());
+
+            return response()->json([
+                'message' => 'Sesión cerrada correctamente'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error al cerrar sesión',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function me()
+    {
+        try {
+            $user = JWTAuth::parseToken()->authenticate();
+
+            return response()->json([
+                'message' => 'Usuario autenticado',
+                'user' => [
+                    'id' => $user->id,
+                    'usuario' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role,
+                    'foto_url' => $user->foto ? url("/storage/users/{$user->foto}") : null,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'No se pudo obtener el usuario',
+                'error' => $e->getMessage()
+            ], 401);
+        }
     }
 }
