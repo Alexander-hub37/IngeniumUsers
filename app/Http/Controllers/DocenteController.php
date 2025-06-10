@@ -11,6 +11,10 @@ use App\Models\Capacitacion;
 use App\Models\DatoIngenium;
 use App\Models\ExperienciaLaboral;
 use App\Models\DatoProfesional;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+
 
 class DocenteController extends Controller
 {
@@ -182,34 +186,106 @@ class DocenteController extends Controller
     {
         $tiposPermitidos = ['foto', 'firma', 'cv'];
 
-        // Verificar si el tipo de archivo es válido
         if (!in_array($tipo, $tiposPermitidos)) {
             return response()->json(['error' => 'Tipo de archivo no permitido'], 400);
         }
 
-        // Mapear el tipo de archivo a su ruta en el almacenamiento privado
         $subcarpetas = [
             'foto' => 'docentes/fotos',
             'firma' => 'docentes/firmas',
             'cv' => 'docentes/cvs',
         ];
 
-        // Obtener la ruta completa del archivo
         $ruta = $subcarpetas[$tipo] . '/' . $filename;
 
-        // Verificar si el archivo existe
         if (!Storage::disk('private')->exists($ruta)) {
             return response()->json(['error' => 'Archivo no encontrado'], 404);
         }
 
-        // Si es un archivo CV, descargamos el archivo
         if ($tipo === 'cv') {
             return Storage::disk('private')->download($ruta);
         }
 
-        // Para fotos y firmas, retornamos la respuesta con el archivo
         return Storage::disk('private')->response($ruta);
     }
 
+    public function storeCombinado(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+ 
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6',
+            'role' => 'nullable|in:admin,user,docente',
+
+            'nombres' => 'required|string|max:100',
+            'apellidos' => 'required|string|max:100',
+            'dni' => 'required|string|max:20|unique:docentes,dni',
+            'fecha_nacimiento' => 'nullable|date',
+            'telefono' => 'nullable|string|max:20',
+            'direccion' => 'nullable|string|max:255',
+            'firma' => 'nullable|image|max:2048',
+            
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+
+        DB::beginTransaction();
+
+        try {
+           
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role' => $request->role ?? 'docente',
+            ]);
+
+            
+            $docente = new Docente([
+                'user_id' => $user->id,
+                'nombres' => $request->nombres,
+                'apellidos' => $request->apellidos,
+                'dni' => $request->dni,
+                'fecha_nacimiento' => $request->fecha_nacimiento,
+                'telefono' => $request->telefono,
+                'direccion' => $request->direccion,
+            ]);
+
+            
+            if ($request->hasFile('foto')) {
+                $docente->foto = basename($request->file('foto')->store('docentes/fotos', 'private'));
+            }
+
+            if ($request->hasFile('firma')) {
+                $docente->firma = basename($request->file('firma')->store('docentes/firmas', 'private'));
+            }
+
+            if ($request->hasFile('cv')) {
+                $docente->cv = basename($request->file('cv')->store('docentes/cvs', 'private'));
+            }
+
+            $docente->save();
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Usuario y docente creados correctamente',
+                'data' => [
+                    'user' => $user,
+                    'docente' => $docente,
+                ]
+            ], 201);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'error' => 'Error al crear usuario y docente',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
 
 }

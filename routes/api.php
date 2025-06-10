@@ -49,6 +49,8 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::get('/docentes/archivo/{tipo}/{filename}', [DocenteController::class, 'verArchivo']);
 
+    Route::post('/registro-docente', [DocenteController::class, 'storeCombinado']);
+    
     Route::group(['middleware' => 'admin'], function() {
         Route::apiResource('/usuarios', UsuarioController::class);
 
