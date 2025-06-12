@@ -17,6 +17,7 @@ class Recomendacion extends Model
         'descripcion',
         'archivo',
         'area_destino',
+        'estado',
     ];
 
     public function user()

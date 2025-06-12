@@ -45,6 +45,7 @@ class UsuarioController extends Controller
             'nombres'          => 'required|string|max:255',
             'telefono'         => 'required|string|max:20',
             'dni'              => 'required|string|max:20|unique:personal_empresa',
+            'fecha_nacimiento'   => 'nullable|date',
 
         ]);
 
@@ -68,6 +69,7 @@ class UsuarioController extends Controller
             'nombres'          => $request->nombres,
             'telefono'         => $request->telefono,
             'dni'              => $request->dni,
+            'fecha_nacimiento' => $request->fecha_nacimiento
         ]);
 
         return response()->json([

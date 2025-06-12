@@ -11,9 +11,7 @@ use App\Http\Controllers\DatoProfesionalController;
 use App\Http\Controllers\ExperienciaLaboralController;
 use App\Http\Controllers\CapacitacionController;
 use App\Http\Controllers\DatoIngeniumController;
-
-
-
+use App\Http\Controllers\RecomendacionController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -53,9 +51,13 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     Route::put('/mi-perfil/personal', [UsuarioController::class, 'updateDatosPersonales']);
 
+    Route::post('/recomendaciones', [RecomendacionController::class, 'store']);
+    Route::get('/recomendaciones/mis', [RecomendacionController::class, 'misRecomendaciones']);
+
     
     Route::group(['middleware' => 'admin'], function() {
         Route::apiResource('/usuarios', UsuarioController::class);
+        Route::get('/recomendaciones', [RecomendacionController::class, 'todas']);
 
     });
 });
