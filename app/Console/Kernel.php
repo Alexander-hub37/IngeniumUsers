@@ -4,9 +4,14 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Console\Commands\GenerarHorarios;
 
 class Kernel extends ConsoleKernel
 {
+
+    protected $commands = [
+        GenerarHorarios::class,
+    ];
     /**
      * Define the application's command schedule.
      *
@@ -15,7 +20,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('horarios:generar')
+             ->sundays()
+             ->at('23:59');
     }
 
     /**

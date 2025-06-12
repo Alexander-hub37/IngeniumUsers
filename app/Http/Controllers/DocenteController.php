@@ -272,11 +272,7 @@ class DocenteController extends Controller
             DB::commit();
 
             return response()->json([
-                'message' => 'Usuario y docente creados correctamente',
-                'data' => [
-                    'user' => $user,
-                    'docente' => $docente,
-                ]
+                'message' => 'Usuario y docente creados correctamente'
             ], 201);
 
         } catch (\Exception $e) {

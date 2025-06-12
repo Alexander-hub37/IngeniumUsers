@@ -26,21 +26,21 @@ class UsersTableSeeder extends Seeder
             'name' => 'Patroclo Lopez',
             'email' => 'patroclolopez@example.com',
             'password' => Hash::make('password'),
-            'role' => 'user'
+            'role' => 'b2c'
         ]);
 
         User::create([
             'name' => 'Aselmo Caceres',
             'email' => 'aselmocaceres@example.com',
             'password' => Hash::make('password'),
-            'role' => 'user'
+            'role' => 'b2b'
         ]);
 
         User::create([
             'name' => 'Eustabio Rodrigues',
             'email' => 'eustabiorodrigues@example.com',
             'password' => Hash::make('password'),
-            'role' => 'user'
+            'role' => 'contabilidad'
         ]);
     }
 }

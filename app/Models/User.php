@@ -38,9 +38,19 @@ class User extends Authenticatable implements JWTSubject
         'remember_token',
     ];
 
+    public function personalEmpresa()
+    {
+        return $this->hasOne(PersonalEmpresa::class);
+    }
+
     public function docente()
     {
         return $this->hasOne(Docente::class);
+    }
+
+    public function recomendaciones()
+    {
+        return $this->hasMany(Recomendacion::class);
     }
 
     /**
