@@ -12,6 +12,7 @@ use App\Http\Controllers\ExperienciaLaboralController;
 use App\Http\Controllers\CapacitacionController;
 use App\Http\Controllers\DatoIngeniumController;
 use App\Http\Controllers\RecomendacionController;
+use App\Http\Controllers\ArchivoPrivadoController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -45,14 +46,14 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/docentes/{id}/completo', [DocenteController::class, 'obtenerDocenteCompleto']);
     Route::get('/docentes-completos', [DocenteController::class, 'obtenerDocentesCompletos']);
 
-    Route::get('/docentes/archivo/{tipo}/{filename}', [DocenteController::class, 'verArchivo']);
+    Route::get('/archivo/{tipo}/{filename}', [ArchivoPrivadoController::class, 'mostrar']);
 
     Route::post('/registro-docente', [DocenteController::class, 'storeCombinado']);
 
     Route::put('/mi-perfil/personal', [UsuarioController::class, 'updateDatosPersonales']);
 
     Route::post('/recomendaciones', [RecomendacionController::class, 'store']);
-    Route::get('/recomendaciones/me', [RecomendacionController::class, 'misRecomendaciones']);
+    Route::get('/recomendaciones/list', [RecomendacionController::class, 'misRecomendaciones']);
 
     Route::patch('/recomendaciones/{id}/estado', [RecomendacionController::class, 'actualizarEstado']);
 

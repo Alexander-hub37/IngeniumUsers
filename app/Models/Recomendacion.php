@@ -25,4 +25,11 @@ class Recomendacion extends Model
         return $this->belongsTo(User::class);
     }
 
+    protected $appends = ['archivo_url'];
+
+    public function getArchivoUrlAttribute()
+    {
+        return $this->archivo ? "api/archivo/recomendacion/{$this->archivo}" : null;
+    }
+
 }

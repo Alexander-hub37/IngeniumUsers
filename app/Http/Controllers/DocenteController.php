@@ -182,32 +182,6 @@ class DocenteController extends Controller
         ]);
     }
 
-    public function verArchivo($tipo, $filename)
-    {
-        $tiposPermitidos = ['foto', 'firma', 'cv'];
-
-        if (!in_array($tipo, $tiposPermitidos)) {
-            return response()->json(['error' => 'Tipo de archivo no permitido'], 400);
-        }
-
-        $subcarpetas = [
-            'foto' => 'docentes/fotos',
-            'firma' => 'docentes/firmas',
-            'cv' => 'docentes/cvs',
-        ];
-
-        $ruta = $subcarpetas[$tipo] . '/' . $filename;
-
-        if (!Storage::disk('private')->exists($ruta)) {
-            return response()->json(['error' => 'Archivo no encontrado'], 404);
-        }
-
-        if ($tipo === 'cv') {
-            return Storage::disk('private')->download($ruta);
-        }
-
-        return Storage::disk('private')->response($ruta);
-    }
 
     public function storeCombinado(Request $request)
     {

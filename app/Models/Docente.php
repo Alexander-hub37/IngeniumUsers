@@ -53,23 +53,17 @@ class Docente extends Model
 
     public function getFotoUrlAttribute()
     {
-        return $this->foto 
-            ? url("/api/docentes/archivo/foto/{$this->foto}") 
-            : null;
+        return $this->foto ? "api/archivo/foto/{$this->foto}" : null;
     }
 
     public function getFirmaUrlAttribute()
     {
-        return $this->firma 
-            ? url("/api/docentes/archivo/firma/{$this->firma}") 
-            : null;
+        return $this->firma ? "api/archivo/firma/{$this->firma}" : null;
     }
 
     public function getCvUrlAttribute()
     {
-        return $this->cv 
-            ? url("/api/docentes/archivo/cv/{$this->cv}") 
-            : null;
+        return $this->cv ? "api/archivo/cv/{$this->cv}" : null;
     }
 
 }

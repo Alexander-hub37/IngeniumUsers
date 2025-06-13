@@ -30,14 +30,14 @@ class RecomendacionController extends Controller
 
         $archivoPath = null;
         if ($request->hasFile('archivo')) {
-            $archivoPath = $request->file('archivo')->store('recomendaciones', 'public');
+            $archivoNombre = basename($request->file('archivo')->store('recomendaciones', 'private'));
         }
 
         $recomendacion = Recomendacion::create([
             'user_id'              => Auth::id(),
             'nombre_requerimiento' => $request->nombre_requerimiento,
             'descripcion'          => $request->descripcion,
-            'archivo'              => $archivoPath,
+            'archivo'              => $archivoNombre,
             'area_destino'         => $request->area_destino,
             'estado'               => 'pendiente',
         ]);
