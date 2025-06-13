@@ -66,7 +66,13 @@ class AuthController extends Controller
         try {
             $user = JWTAuth::parseToken()->authenticate();
             
-            return response()->json(auth()->user());
+            return response()->json([
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role,
+                
+            ]);
 
         } catch (\Exception $e) {
             return response()->json([

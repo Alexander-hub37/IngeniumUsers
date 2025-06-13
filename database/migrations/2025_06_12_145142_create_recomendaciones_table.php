@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('descripcion')->nullable();
             $table->string('archivo')->nullable(); 
             $table->string('area_destino');
+            $table->integer('calificacion')->nullable();
             $table->string('estado');
             $table->timestamps();
         });

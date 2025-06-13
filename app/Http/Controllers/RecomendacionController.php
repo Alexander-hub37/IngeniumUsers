@@ -61,4 +61,28 @@ class RecomendacionController extends Controller
         $recomendaciones = Recomendacion::with('user')->latest()->get();
         return response()->json($recomendaciones);
     }
+
+    public function actualizarEstado(Request $request, $id)
+    {
+        $request->validate([
+            'estado' => 'required|in:aprobado,rechazado',
+            'calificacion' => 'required|integer|min:0|max:5',
+        ]);
+
+        $recomendacion = Recomendacion::find($id);
+
+        if (!$recomendacion) {
+            return response()->json(['error' => 'Recomendación no encontrada'], 404);
+        }
+
+        $recomendacion->estado = $request->estado;
+        $recomendacion->calificacion = $request->calificacion;
+        $recomendacion->save();
+
+        return response()->json([
+            'message' => 'Recomendacion actualizado correctamente',
+            'data'    => $recomendacion
+        ]);
+    }
+
 }

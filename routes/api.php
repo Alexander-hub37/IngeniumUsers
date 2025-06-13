@@ -52,7 +52,10 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::put('/mi-perfil/personal', [UsuarioController::class, 'updateDatosPersonales']);
 
     Route::post('/recomendaciones', [RecomendacionController::class, 'store']);
-    Route::get('/recomendaciones/mis', [RecomendacionController::class, 'misRecomendaciones']);
+    Route::get('/recomendaciones/me', [RecomendacionController::class, 'misRecomendaciones']);
+
+    Route::patch('/recomendaciones/{id}/estado', [RecomendacionController::class, 'actualizarEstado']);
+
 
     
     Route::group(['middleware' => 'admin'], function() {
